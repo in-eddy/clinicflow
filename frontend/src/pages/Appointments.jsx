@@ -67,7 +67,7 @@ export default function Appointments() {
               <td>{new Date(a.appointmentDate).toLocaleString()}</td>
               <td>{a.patientName}</td><td>{a.reason}</td>
               <td>
-                <select value={a.status} onChange={(e) => changeStatus(a.id, e.target.value)}>
+                <select className="status" data-status={a.status} onChange={(e) => changeStatus(a.id, e.target.value)}>
                   {STATUSES.map((s) => <option key={s}>{s}</option>)}
                 </select>
               </td>

@@ -63,7 +63,7 @@ export default function Patients() {
               <td>{p.cin}</td><td>{p.phone}</td><td>{p.birthDate}</td>
               <td>
                 <button onClick={() => { setForm(p); setError(''); }}>Edit</button>
-                {user.role === 'admin' && <button onClick={() => remove(p.id)}>Delete</button>}
+                {user.role === 'admin' && <button className="danger" onClick={() => remove(p.id)}>Delete</button>}
               </td>
             </tr>
           ))}

@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, Link } from 'react-router-dom';
+import { Routes, Route, Navigate, NavLink } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -7,25 +7,25 @@ import PatientDetails from './pages/PatientDetails';
 import Appointments from './pages/Appointments';
 
 function Protected({ children }) {
-  const { user, loading } = useAuth();
-  if (loading) return <p>Loading...</p>;
+  const { user, loading, logout } = useAuth();
+  if (loading) return <p style={{ padding: 24 }}>Loading...</p>;
   if (!user) return <Navigate to="/login" replace />;
   return (
-    <>
-      <nav style={{ display: 'flex', gap: 16, padding: 12, borderBottom: '1px solid #ccc' }}>
-        <Link to="/">Dashboard</Link>
-        <Link to="/patients">Patients</Link>
-        <Link to="/appointments">Appointments</Link>
-        <span style={{ marginLeft: 'auto' }}>{user.fullName} ({user.role})</span>
-        <LogoutButton />
-      </nav>
-      <main style={{ padding: 16 }}>{children}</main>
-    </>
+    <div className="shell">
+      <aside className="sidebar">
+        <div className="brand">ClinicFlow</div>
+        <NavLink to="/" end>Dashboard</NavLink>
+        <NavLink to="/patients">Patients</NavLink>
+        <NavLink to="/appointments">Appointments</NavLink>
+        <div className="who">
+          <strong>{user.fullName}</strong>
+          {user.role}
+          <button onClick={logout}>Log out</button>
+        </div>
+      </aside>
+      <main className="page">{children}</main>
+    </div>
   );
-}
-function LogoutButton() {
-  const { logout } = useAuth();
-  return <button onClick={logout}>Logout</button>;
 }
 
 export default function App() {

@@ -17,12 +17,22 @@ export default function Login() {
   };
 
   return (
-    <form onSubmit={submit} style={{ maxWidth: 320, margin: '80px auto', display: 'grid', gap: 8 }}>
-      <h2>ClinicFlow</h2>
-      <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button>Login</button>
-    </form>
+    <div className="login">
+      <div className="login-brand">
+        <h1>ClinicFlow</h1>
+        <p>Manage patients and appointments for your clinic.</p>
+      </div>
+      <form className="login-form" onSubmit={submit}>
+        <h2>Sign in</h2>
+        <label>Email
+          <input value={email} onChange={(e) => setEmail(e.target.value)} />
+        </label>
+        <label>Password
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </label>
+        {error && <p className="error">{error}</p>}
+        <button>Sign in</button>
+      </form>
+    </div>
   );
 }

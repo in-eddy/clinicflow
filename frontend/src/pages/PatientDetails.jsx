@@ -26,7 +26,7 @@ export default function PatientDetails() {
           {appts.map((a) => (
             <tr key={a.id}>
               <td>{new Date(a.appointmentDate).toLocaleString()}</td>
-              <td>{a.status}</td><td>{a.reason}</td><td>{a.notes}</td>
+              <td><span className="pill" data-status={a.status}>{a.status}</span></td><td>{a.reason}</td><td>{a.notes}</td>
             </tr>
           ))}
         </tbody>
