@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api, { errMsg } from '../api';
+import api, { errDetail } from '../api';
 import { useAuth } from '../AuthContext';
+import { formatDate, todayISO } from '../utils/date';
 
 const empty = { fullName: '', cin: '', phone: '', birthDate: '', address: '' };
 
@@ -26,7 +27,7 @@ export default function Patients() {
     try {
       if (id) await api.put(`/patients/${id}`, body); else await api.post('/patients', body);
       setForm(null); load();
-    } catch (err) { setError(errMsg(err)); }
+    } catch (err) { setError(errDetail(err)); }
   };
   const remove = async (id) => {
     if (confirm('Delete this patient and their appointments?')) { await api.delete(`/patients/${id}`); load(); }
@@ -47,7 +48,7 @@ export default function Patients() {
           <input placeholder="Full name" value={form.fullName} onChange={set('fullName')} />
           <input placeholder="CIN" value={form.cin} onChange={set('cin')} />
           <input placeholder="Phone" value={form.phone} onChange={set('phone')} />
-          <input type="date" value={form.birthDate} onChange={set('birthDate')} />
+          <input type="date" min="1900-01-01" max={todayISO()} value={form.birthDate} onChange={set('birthDate')} />
           <input placeholder="Address (optional)" value={form.address ?? ''} onChange={set('address')} />
           {error && <p style={{ color: 'red' }}>{error}</p>}
           <div><button>Save</button> <button type="button" onClick={() => setForm(null)}>Cancel</button></div>
@@ -60,7 +61,7 @@ export default function Patients() {
           {res.data.map((p) => (
             <tr key={p.id}>
               <td><Link to={`/patients/${p.id}`}>{p.fullName}</Link></td>
-              <td>{p.cin}</td><td>{p.phone}</td><td>{p.birthDate}</td>
+              <td>{p.cin}</td><td>{p.phone}</td><td>{formatDate(p.birthDate)}</td>
               <td>
                 <button onClick={() => { setForm(p); setError(''); }}>Edit</button>
                 {user.role === 'admin' && <button className="danger" onClick={() => remove(p.id)}>Delete</button>}

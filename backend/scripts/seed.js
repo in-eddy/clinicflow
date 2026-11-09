@@ -2,10 +2,11 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const pool = require('../src/config/db');
 
+// [nom, email, rôle, mot de passe] : chaque compte a son propre mot de passe
 const users = [
-  ['Admin', 'admin@clinic.com', 'admin'],
-  ['Staff One', 'staff1@clinic.com', 'staff'],
-  ['Staff Two', 'staff2@clinic.com', 'staff'],
+  ['Admin', 'admin@clinic.com', 'admin', 'Admin123!'],
+  ['Staff One', 'staff1@clinic.com', 'staff', 'Staff123!'],
+  ['Staff Two', 'staff2@clinic.com', 'staff', 'Staff456!'],
 ];
 const patients = [
   ['Youssef El Amrani', 'AB123456', '0612345678', '1990-03-12', 'Casablanca'],
@@ -25,11 +26,15 @@ const appts = [
 
 (async () => {
   try {
-    const hash = await bcrypt.hash('Password123!', 10);
+    if (process.argv.includes('--if-empty')) {
+      const { rows } = await pool.query('SELECT COUNT(*)::int AS n FROM users');
+      if (rows[0].n > 0) { console.log('Seed skipped: database already has data'); return; }
+    }
     await pool.query('TRUNCATE appointments, patients, users CASCADE');
 
     const userIds = {};
-    for (const [name, email, role] of users) {
+    for (const [name, email, role, password] of users) {
+      const hash = await bcrypt.hash(password, 10); // un hash (et un sel) par utilisateur
       const r = await pool.query(
         'INSERT INTO users (full_name,email,password_hash,role) VALUES ($1,$2,$3,$4) RETURNING id',
         [name, email, hash, role]);
@@ -47,7 +52,7 @@ const appts = [
          VALUES ($1, date_trunc('day', now()) + make_interval(days => $2::int, hours => $3::int), $4, $5, $6)`,
         [pids[pi], day, hour, status, reason, userIds['staff1@clinic.com']]);
     }
-    console.log('Seed done. All passwords: Password123!');
+    console.log('Seed done. Accounts: admin@clinic.com / Admin123!, staff1@clinic.com / Staff123!, staff2@clinic.com / Staff456!');
   } catch (e) { console.error(e); process.exitCode = 1; }
   finally { await pool.end(); }
 })();

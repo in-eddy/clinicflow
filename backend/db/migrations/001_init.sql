@@ -1,9 +1,16 @@
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
-CREATE TYPE user_role AS ENUM ('admin', 'staff');
-CREATE TYPE appointment_status AS ENUM ('pending', 'confirmed', 'cancelled');
+DO $$ BEGIN
+  CREATE TYPE user_role AS ENUM ('admin', 'staff');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
-CREATE TABLE users (
+DO $$ BEGIN
+  CREATE TYPE appointment_status AS ENUM ('pending', 'confirmed', 'cancelled');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+CREATE TABLE IF NOT EXISTS users (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   full_name     VARCHAR(100) NOT NULL,
   email         VARCHAR(255) NOT NULL UNIQUE,
@@ -12,7 +19,7 @@ CREATE TABLE users (
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE TABLE patients (
+CREATE TABLE IF NOT EXISTS patients (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   full_name  VARCHAR(150) NOT NULL,
   cin        VARCHAR(20)  NOT NULL UNIQUE,
@@ -22,7 +29,7 @@ CREATE TABLE patients (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE TABLE appointments (
+CREATE TABLE IF NOT EXISTS appointments (
   id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   patient_id       UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
   appointment_date TIMESTAMPTZ NOT NULL,
@@ -33,7 +40,7 @@ CREATE TABLE appointments (
   created_at       TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-CREATE INDEX idx_patients_full_name_trgm ON patients USING gin (full_name gin_trgm_ops);
-CREATE INDEX idx_appointments_date       ON appointments (appointment_date);
-CREATE INDEX idx_appointments_status     ON appointments (status);
-CREATE INDEX idx_appointments_patient    ON appointments (patient_id, appointment_date);
+CREATE INDEX IF NOT EXISTS idx_patients_full_name_trgm ON patients USING gin (full_name gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS idx_appointments_date       ON appointments (appointment_date);
+CREATE INDEX IF NOT EXISTS idx_appointments_status     ON appointments (status);
+CREATE INDEX IF NOT EXISTS idx_appointments_patient    ON appointments (patient_id, appointment_date);

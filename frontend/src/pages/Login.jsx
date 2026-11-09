@@ -7,7 +7,7 @@ export default function Login() {
   const { login } = useAuth();
   const nav = useNavigate();
   const [email, setEmail] = useState('admin@clinic.com');
-  const [password, setPassword] = useState('Password123!');
+  const [password, setPassword] = useState('Admin123!');
   const [error, setError] = useState('');
 
   const submit = async (e) => {

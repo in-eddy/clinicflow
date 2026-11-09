@@ -65,6 +65,8 @@ exports.updateStatus = (id, status) => inTransaction(async (client) => {
   const cur = await client.query('SELECT patient_id, appointment_date FROM appointments WHERE id = $1', [id]);
   if (!cur.rows[0]) throw new AppError(404, 'Appointment not found');
   const { patient_id, appointment_date } = cur.rows[0];
+  if (status === 'confirmed' && new Date(appointment_date) < new Date())
+    throw new AppError(400, 'Cannot confirm an appointment in the past');
 
   await lockPatient(client, patient_id);
   if (status === 'confirmed') await assertNoConflict(client, patient_id, appointment_date, id);

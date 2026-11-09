@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import api, { errMsg } from '../api';
+import api, { errMsg, errDetail } from '../api';
+import { nowLocalInput } from '../utils/date';
 
 const STATUSES = ['pending', 'confirmed', 'cancelled'];
 
@@ -27,7 +28,7 @@ export default function Appointments() {
       });
       setForm({ patientId: '', appointmentDate: '', reason: '', notes: '' });
       load();
-    } catch (err) { setError(errMsg(err)); }
+    } catch (err) { setError(errDetail(err)); }
   };
 
   const changeStatus = async (id, status) => {
@@ -44,7 +45,7 @@ export default function Appointments() {
           <option value="">-- Patient --</option>
           {patients.map((p) => <option key={p.id} value={p.id}>{p.fullName} ({p.cin})</option>)}
         </select>
-        <input type="datetime-local" value={form.appointmentDate} onChange={f('appointmentDate')} />
+        <input type="datetime-local" min={nowLocalInput()} value={form.appointmentDate} onChange={f('appointmentDate')} />
         <input placeholder="Reason" value={form.reason} onChange={f('reason')} />
         <input placeholder="Notes (optional)" value={form.notes} onChange={f('notes')} />
         {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -67,7 +68,7 @@ export default function Appointments() {
               <td>{new Date(a.appointmentDate).toLocaleString()}</td>
               <td>{a.patientName}</td><td>{a.reason}</td>
               <td>
-                <select className="status" data-status={a.status} onChange={(e) => changeStatus(a.id, e.target.value)}>
+                <select className="status" data-status={a.status} value={a.status} onChange={(e) => changeStatus(a.id, e.target.value)}>
                   {STATUSES.map((s) => <option key={s}>{s}</option>)}
                 </select>
               </td>

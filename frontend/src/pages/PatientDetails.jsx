@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api';
+import { formatDate, ageFrom } from '../utils/date';
 
 export default function PatientDetails() {
   const { id } = useParams();
@@ -17,7 +18,7 @@ export default function PatientDetails() {
     <div>
       <Link to="/patients">← Back</Link>
       <h2>{patient.fullName}</h2>
-      <p>CIN: {patient.cin} | Phone: {patient.phone} | Born: {patient.birthDate}</p>
+      <p>CIN: {patient.cin} | Phone: {patient.phone} | Born: {formatDate(patient.birthDate)} ({ageFrom(patient.birthDate)} years)</p>
       <p>Address: {patient.address || '—'}</p>
       <h3>Appointments</h3>
       <table border="1" cellPadding="6">

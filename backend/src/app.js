@@ -10,6 +10,7 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/patients', require('./routes/patients.routes'));
 app.use('/api/appointments', require('./routes/appointments.routes'));
 app.use('/api/dashboard', require('./routes/dashboard.routes'));
+app.use('/api/users', require('./routes/users.routes'));
 
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
 app.use(errorHandler);

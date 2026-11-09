@@ -1,0 +1,14 @@
+{
+  "name": "clinicflow",
+  "private": true,
+  "scripts": {
+    "setup": "npm install && npm install --prefix backend && npm install --prefix frontend",
+    "db:up": "docker compose up -d db",
+    "db:reset": "npm run migrate --prefix backend && npm run seed --prefix backend",
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "docker": "docker compose up --build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

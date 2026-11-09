@@ -3,7 +3,7 @@ const status = z.enum(['pending', 'confirmed', 'cancelled']);
 
 exports.createSchema = z.object({
   patientId: z.string().uuid(),
-  appointmentDate: z.coerce.date(),
+  appointmentDate: z.coerce.date().refine((d) => d > new Date(), 'Appointment date must be in the future'),
   status: status.default('pending'),
   reason: z.string().trim().min(3).max(255),
   notes: z.string().trim().max(1000).optional(),

@@ -14,4 +14,7 @@ api.interceptors.response.use((r) => r, (err) => {
   return Promise.reject(err);
 });
 export const errMsg = (e) => e.response?.data?.message || 'Something went wrong';
+// Erreurs de validation : "birthDate: Birth date cannot be in the future"
+export const errDetail = (e) =>
+  e.response?.data?.errors?.map((x) => `${x.path}: ${x.message}`).join(' · ') || errMsg(e);
 export default api;
