@@ -44,8 +44,6 @@ Le script correspondant est `backend/db/migrations/001_init.sql`.
 |---|---|---|
 | `patients` → `appointments` | **1-N** | Un patient a plusieurs rendez-vous dans le temps. Un rendez-vous concerne un seul patient. La clé étrangère `patient_id` est donc du côté N, dans `appointments`. |
 | `users` → `appointments` | **1-N** | Un utilisateur (staff ou admin) crée plusieurs rendez-vous. `created_by` garde la trace de qui a créé chaque rendez-vous. |
-| 1-1 | aucune | Aucune entité n'est liée de façon exclusive à une seule autre. |
-| N-N | aucune | Un rendez-vous a exactement un patient, et il n'y a pas d'entité praticien dans le périmètre. Si un rendez-vous pouvait avoir plusieurs praticiens, on ajouterait une table de jonction. |
 
 ## 3. Règles de suppression
 

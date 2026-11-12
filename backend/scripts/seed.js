@@ -2,7 +2,7 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const pool = require('../src/config/db');
 
-// [nom, email, rôle, mot de passe] : chaque compte a son propre mot de passe
+
 const users = [
   ['Admin', 'admin@clinic.com', 'admin', 'Admin123!'],
   ['Staff One', 'staff1@clinic.com', 'staff', 'Staff123!'],
@@ -15,7 +15,7 @@ const patients = [
   ['Khadija Alaoui', 'GH456789', '0645678901', '1978-01-30', 'Khouribga'],
   ['Hamza Tazi', 'IJ567890', '0656789012', '1995-09-18', 'Marrakech'],
 ];
-// [patientIndex, dayOffset, hour, status, reason]
+
 const appts = [
   [0, 0, 9, 'confirmed', 'Consultation'], [0, 0, 14, 'pending', 'Follow-up'],
   [1, 0, 10, 'confirmed', 'Blood test'],  [1, 1, 11, 'pending', 'Check-up'],
@@ -34,7 +34,7 @@ const appts = [
 
     const userIds = {};
     for (const [name, email, role, password] of users) {
-      const hash = await bcrypt.hash(password, 10); // un hash (et un sel) par utilisateur
+      const hash = await bcrypt.hash(password, 10);
       const r = await pool.query(
         'INSERT INTO users (full_name,email,password_hash,role) VALUES ($1,$2,$3,$4) RETURNING id',
         [name, email, hash, role]);

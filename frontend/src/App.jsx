@@ -11,7 +11,6 @@ function Protected({ children, adminOnly = false }) {
   const { user, loading, logout } = useAuth();
   if (loading) return <p style={{ padding: 24 }}>Loading...</p>;
   if (!user) return <Navigate to="/login" replace />;
-  // Confort d'affichage uniquement : la vraie protection est dans l'API (403).
   if (adminOnly && user.role !== 'admin') return <Navigate to="/" replace />;
   return (
     <div className="shell">

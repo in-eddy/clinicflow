@@ -1,7 +1,5 @@
 const { z } = require('zod');
 
-// Accepte "YYYY-MM-DD" (format de l'API et de <input type="date">)
-// et "DD/MM/YYYY" (format habituel au Maroc). Retourne toujours "YYYY-MM-DD".
 function parseBirthDate(raw, ctx) {
   const s = raw.trim();
   let y, m, d;
@@ -22,8 +20,6 @@ function parseBirthDate(raw, ctx) {
     return z.NEVER;
   }
 
-  // JavaScript "corrige" les dates impossibles (31 février devient 3 mars).
-  // On reconstruit la date et on vérifie qu'on retombe sur les mêmes valeurs.
   const date = new Date(Date.UTC(year, month - 1, day));
   const exists = date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
   if (!exists) {

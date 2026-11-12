@@ -5,7 +5,7 @@ exports.createUserSchema = z.object({
   email: z.string().trim().toLowerCase().email().max(255),
   password: z.string()
     .min(8, 'Password must be at least 8 characters')
-    .max(72, 'Password must be at most 72 characters') // limite de bcrypt
+    .max(72, 'Password must be at most 72 characters')
     .regex(/[A-Za-z]/, 'Password must contain a letter')
     .regex(/\d/, 'Password must contain a digit'),
   role: z.enum(['admin', 'staff']).default('staff'),

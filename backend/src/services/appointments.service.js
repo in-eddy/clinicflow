@@ -6,8 +6,6 @@ const SELECT = `SELECT a.id, a.patient_id AS "patientId", p.full_name AS "patien
   a.created_by AS "createdBy", a.created_at AS "createdAt"
   FROM appointments a JOIN patients p ON p.id = a.patient_id`;
 
-// Règle des 30 minutes : refuse s'il existe déjà un RDV confirmé
-// du même patient à moins de 30 min avant ou après la date donnée.
 async function assertNoConflict(client, patientId, date, excludeId = null) {
   const { rowCount } = await client.query(
     `SELECT 1 FROM appointments
@@ -19,7 +17,6 @@ async function assertNoConflict(client, patientId, date, excludeId = null) {
   if (rowCount) throw new AppError(409, 'Patient already has a confirmed appointment within 30 minutes');
 }
 
-// Transaction : tout réussit ou tout est annulé (ROLLBACK).
 async function inTransaction(fn) {
   const client = await pool.connect();
   try {
@@ -33,7 +30,6 @@ async function inTransaction(fn) {
   } finally { client.release(); }
 }
 
-// Verrou sur le patient : évite que 2 requêtes simultanées passent la vérification.
 async function lockPatient(client, patientId) {
   const { rowCount } = await client.query('SELECT 1 FROM patients WHERE id = $1 FOR UPDATE', [patientId]);
   if (!rowCount) throw new AppError(404, 'Patient not found');
